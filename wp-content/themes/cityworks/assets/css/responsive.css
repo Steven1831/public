@@ -1,0 +1,255 @@
+/**
+ * Responsive Styles — CityWorks v2.1
+ * @package CityWorks
+ */
+
+/* ==========================================
+   MOBILE (< 640px)
+   ========================================== */
+@media (max-width: 639px) {
+
+    /* Typography */
+    h1 { font-size: 2rem !important; }
+    h2 { font-size: 1.75rem !important; }
+    h3 { font-size: 1.5rem !important; }
+
+    /* Header */
+    .site-header {
+        padding: 0.75rem 0;
+    }
+
+    .logo-text {
+        font-size: 1.25rem;
+    }
+
+    /* Hero */
+    .hero {
+        padding-top: calc(70px + 3rem);
+        padding-bottom: 3rem;
+    }
+
+    .hero-grid {
+        gap: 2.5rem;
+    }
+
+    .hero-title {
+        font-size: 2rem !important;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-cta-group {
+        flex-direction: column;
+    }
+
+    .hero-cta-primary,
+    .hero-cta-secondary,
+    .header-cta {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hero-trust {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .hero-visual {
+        display: none;
+    }
+
+    /* Stats */
+    .stat-item h3 {
+        font-size: 2.5rem;
+    }
+
+    /* Services / Industries */
+    .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4,
+    .grid.grid-cols-1.lg\:grid-cols-3 {
+        grid-template-columns: 1fr;
+    }
+
+    /* Case studies */
+    .case-image-col {
+        min-height: 180px;
+    }
+
+    /* Footer */
+    .footer-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2rem;
+    }
+
+    .footer-col {
+        text-align: center;
+    }
+
+    .footer-social {
+        justify-content: center;
+    }
+
+    .footer-contact li {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .footer-legal a {
+        margin: 0 0.5rem;
+    }
+
+    /* Buttons */
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+
+    /* CTA section */
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cta-primary,
+    .cta-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Partners */
+    .partners-grid {
+        gap: 1.5rem;
+    }
+
+    .partner-logo {
+        max-height: 32px;
+    }
+}
+
+/* ==========================================
+   PHABLET (640px – 767px)
+   ========================================== */
+@media (min-width: 640px) and (max-width: 767px) {
+
+    .hero-title {
+        font-size: 2.5rem !important;
+    }
+
+    .hero-cta-group {
+        flex-wrap: wrap;
+    }
+
+    .stat-item h3 {
+        font-size: 3rem;
+    }
+
+    .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .case-image-col {
+        min-height: 200px;
+    }
+}
+
+/* ==========================================
+   TABLET (768px – 1023px)
+   ========================================== */
+@media (min-width: 768px) and (max-width: 1023px) {
+
+    .hero-title {
+        font-size: 3rem !important;
+    }
+
+    .hero-grid {
+        gap: 3rem;
+    }
+
+    /* Ocultar imagen del hero en tablets para ahorrar espacio */
+    .hero-visual {
+        display: none;
+    }
+
+    .grid.grid-cols-1.lg\:grid-cols-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid.grid-cols-1.lg\:grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 2rem;
+    }
+}
+
+/* ==========================================
+   DESKTOP (1024px+) — ocultar móvil siempre
+   ========================================== */
+@media (min-width: 1024px) {
+
+    .mobile-menu,
+    .mobile-menu-overlay,
+    .mobile-menu-btn {
+        display: none !important;
+    }
+
+    .hero-visual {
+        display: block !important;
+    }
+}
+
+/* ==========================================
+   EXTRA-SMALL HIDDEN (mostrar solo en ≥ sm)
+   ========================================== */
+@media (max-width: 639px) {
+    .hidden-mobile {
+        display: none !important;
+    }
+}
+
+/* ==========================================
+   LANDSCAPE MOBILE (max 896px, alto < 400px)
+   ========================================== */
+@media (max-width: 896px) and (max-height: 400px) {
+    .hero {
+        min-height: auto;
+        padding-top: 70px;
+    }
+}
+
+/* ==========================================
+   ORIENTATION
+   ========================================== */
+@media (orientation: landscape) and (max-height: 500px) {
+    .hero {
+        min-height: auto;
+    }
+}
+
+/* ==========================================
+   DARK MODE (si se agrega el futuro)
+   ========================================== */
+@media (prefers-color-scheme: dark) {
+    /* Opcional: soporte nativo dark mode */
+}
+
+/* ==========================================
+   ACCESSIBILITY
+   ========================================== */
+@media (prefers-contrast: high) {
+    :focus-visible {
+        outline: 3px solid #000;
+        outline-offset: 3px;
+    }
+}
