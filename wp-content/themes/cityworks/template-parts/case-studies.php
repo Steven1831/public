@@ -35,7 +35,7 @@ $case_images = array(
                             <strong><?php _e('Solution:', 'cityworks'); ?></strong> <?php echo esc_html($case['solution']); ?>
                         </p>
                         <div class="case-result">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23 6l-9.5 9.5-5-5L1 18l5 5 7-7 5 5 4-4z"/></svg>
+                            <i class="<?php echo esc_attr(cityworks_get_icon_class('check-circle', 'check-circle')); ?>" aria-hidden="true"></i>
                             <?php echo esc_html($case['result']); ?>
                         </div>
                         <a href="<?php echo esc_url($case['link'] ?? '#contact'); ?>" class="btn btn-secondary btn-sm mt-4"><?php _e('Similar Project', 'cityworks'); ?></a>

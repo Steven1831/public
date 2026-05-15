@@ -21,6 +21,28 @@ if (!defined('CITYWORKS_THEME_URL')) {
  * Register all Custom Post Types
  */
 function cityworks_register_post_types() {
+
+    // ==========================================
+    // 0. SOLUTION PLAYS (Soluciones)
+    // ==========================================
+    register_post_type('solution_play', array(
+        'labels' => array(
+            'name' => __('Priority Plays', 'cityworks'),
+            'singular_name' => __('Priority Play', 'cityworks'),
+            'add_new' => __('Add Priority Play', 'cityworks'),
+            'add_new_item' => __('Add New Priority Play', 'cityworks'),
+            'edit_item' => __('Edit Priority Play', 'cityworks'),
+            'new_item' => __('New Priority Play', 'cityworks'),
+            'view_item' => __('View Priority Play', 'cityworks'),
+            'search_items' => __('Search Priority Plays', 'cityworks'),
+        ),
+        'public' => true,
+        'has_archive' => false,
+        'rewrite' => array('slug' => 'priority-play'),
+        'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'page-attributes'),
+        'show_in_rest' => true,
+        'show_in_menu' => 'cityworks_solutions_admin',
+    ));
     
     // ==========================================
     // 1. SERVICES (Servicios)
@@ -39,7 +61,7 @@ function cityworks_register_post_types() {
             'not_found_in_trash' => __('No se encontraron servicios en la papelera', 'cityworks'),
         ),
         'public' => true,
-        'has_archive' => 'servicios',
+        'has_archive' => false,
         'rewrite' => array('slug' => 'servicios'),
         'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'revisions'),
         'show_in_rest' => true,
@@ -84,7 +106,7 @@ function cityworks_register_post_types() {
             'search_items' => __('Buscar Casos de Éxito', 'cityworks'),
         ),
         'public' => true,
-        'has_archive' => 'casos-de-exito',
+        'has_archive' => false,
         'rewrite' => array('slug' => 'casos-de-exito'),
         'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'),
         'show_in_rest' => true,
@@ -143,7 +165,7 @@ function cityworks_register_post_types() {
             'add_new_item' => __('Añadir Nuevo Recurso', 'cityworks'),
         ),
         'public' => true,
-        'has_archive' => 'recursos',
+        'has_archive' => false,
         'rewrite' => array('slug' => 'recursos'),
         'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'),
         'show_in_rest' => true,
@@ -460,6 +482,119 @@ require_once CITYWORKS_THEME_DIR . '/includes/widgets.php';
 require_once CITYWORKS_THEME_DIR . '/includes/shortcodes.php';
 
 /**
+ * Insert starter CPT content only when that exact title does not exist.
+ */
+function cityworks_seed_content_post($post_type, $title, $content, $meta = array(), $excerpt = '', $menu_order = 0) {
+    $existing = get_posts(array(
+        'post_type'      => $post_type,
+        'post_status'    => 'any',
+        'title'          => $title,
+        'posts_per_page' => 1,
+        'fields'         => 'ids',
+    ));
+
+    if (!empty($existing)) {
+        return (int) $existing[0];
+    }
+
+    $post_id = wp_insert_post(array(
+        'post_type'    => $post_type,
+        'post_title'   => $title,
+        'post_content' => $content,
+        'post_excerpt' => $excerpt,
+        'post_status'  => 'publish',
+        'menu_order'   => $menu_order,
+    ));
+
+    if (!is_wp_error($post_id)) {
+        foreach ($meta as $key => $value) {
+            update_post_meta($post_id, $key, $value);
+        }
+    }
+
+    return $post_id;
+}
+
+/**
+ * Seed editable starter content for empty areas.
+ */
+function cityworks_seed_default_content() {
+    $solutions = array(
+        array('AI', 'Convertimos casos de uso de IA en flujos productivos, gobernados y medibles.', 'Automatizacion inteligente sin perder control operativo.', 'Vertex AI, Gemini for Google Cloud, Document AI, AI governance', 'ph-brain'),
+        array('Data', 'Creamos bases modernas de datos para analitica, reporting, automatizacion e IA.', 'Decisiones mas rapidas con datos confiables.', 'BigQuery, Looker, Data pipelines, Data quality', 'ph-chart-line-up'),
+        array('Infrastructure', 'Disenamos fundamentos cloud seguros para migracion, modernizacion y plataformas escalables.', 'Operaciones resilientes con menor friccion tecnica.', 'Cloud migration, GKE, Landing zones, Platform engineering', 'ph-cloud'),
+        array('Security', 'Integramos seguridad cloud, deteccion de amenazas y cumplimiento dentro del modelo operativo.', 'Menos exposicion, mas visibilidad y mejor respuesta.', 'Chronicle, Mandiant, Zero Trust, Cloud posture management', 'ph-shield-check'),
+        array('Agentic Workplace Transformation', 'Transformamos la colaboracion con Workspace, Gemini y agentes orientados a procesos reales.', 'Equipos mas productivos, adopcion mas clara.', 'Google Workspace, Gemini adoption, Agentspace, Workflow automation', 'ph-users-three'),
+    );
+
+    foreach ($solutions as $index => $solution) {
+        cityworks_seed_content_post('solution_play', $solution[0], $solution[1], array(
+            'solution_outcome' => $solution[2],
+            'solution_items'   => $solution[3],
+            'solution_icon'    => $solution[4],
+        ), $solution[1], $index + 1);
+    }
+
+    $services = array(
+        array('Cloud Migration & Modernization', 'Migracion, modernizacion y landing zones en Google Cloud con gobierno, seguridad y automatizacion desde el primer dia.', 'cloud'),
+        array('AI & Vertex AI Delivery', 'Casos de uso con Gemini, Vertex AI y Document AI llevados desde prototipo hasta operacion real.', 'brain'),
+        array('Data Analytics & Looker', 'BigQuery, Looker, pipelines y calidad de datos para decisiones confiables y tableros accionables.', 'chart-line-up'),
+        array('Security Operations', 'Arquitectura Zero Trust, posture management, Chronicle y respuesta con practicas de seguridad cloud.', 'shield-check'),
+        array('Google Workspace Transformation', 'Adopcion de Workspace, Gemini y automatizacion de flujos colaborativos con control administrativo.', 'users-three'),
+        array('Cloud Optimization & FinOps', 'Auditorias de gasto, rightsizing, etiquetas, presupuestos y roadmaps de ahorro medible.', 'coins'),
+        array('Change Management', 'Consultoria de adopcion digital, comunicacion, champions internos y transformacion cultural.', 'arrows-clockwise'),
+        array('Managed Support', 'Soporte administrativo, continuidad operativa, monitoreo y mejoras continuas despues del go-live.', 'headset'),
+    );
+
+    foreach ($services as $index => $service) {
+        cityworks_seed_content_post('service', $service[0], $service[1], array(
+            'service_icon' => $service[2],
+        ), $service[1], $index + 1);
+    }
+
+    $industries = array(
+        array('Financial Services', 'Open banking, seguridad, modernizacion de core y analitica para instituciones financieras.', 'Apigee, GKE, Agentspace, Chronicle'),
+        array('Healthcare & Life Sciences', 'Datos clinicos, IA aplicada, cumplimiento y colaboracion segura para organizaciones de salud.', 'Healthcare Data Engine, Vertex AI, Document AI, Workspace'),
+        array('Retail & CPG', 'Analitica de demanda, personalizacion, comercio digital y operaciones conectadas.', 'BigQuery, Looker, Customer Data Platform, Cloud Commerce'),
+        array('Public Sector', 'Servicios digitales, automatizacion documental, datos ciudadanos y seguridad institucional.', 'Workspace, Document AI, BigQuery, Chronicle'),
+        array('Manufacturing', 'Datos operativos, mantenimiento predictivo, cadena de suministro y tableros de produccion.', 'Manufacturing Data Engine, Vertex AI, IoT, Looker'),
+    );
+
+    foreach ($industries as $index => $industry) {
+        cityworks_seed_content_post('industry', $industry[0], $industry[1], array(
+            'industry_solutions' => $industry[2],
+        ), $industry[1], $index + 1);
+    }
+
+    $cases = array(
+        array('Cloud migration operating model', 'Legacy infrastructure created slow releases and rising costs.', 'Built a Google Cloud migration operating model with landing zones, GKE and Terraform.', '38% cost reduction and 60% faster deployments.', 'Financial Services'),
+        array('AI adoption for document workflows', 'Manual review slowed back-office operations.', 'Implemented Document AI and Vertex AI workflows with governance and human review.', '10x faster document processing with better traceability.', 'Operations'),
+        array('Workspace security modernization', 'Collaboration tools needed stronger controls and admin visibility.', 'Rolled out Workspace security posture, Gemini enablement and admin training.', 'Higher adoption with stronger governance.', 'Productivity'),
+    );
+
+    foreach ($cases as $index => $case) {
+        cityworks_seed_content_post('case_study', $case[0], $case[2], array(
+            'problem'  => $case[1],
+            'solution' => $case[2],
+            'result'   => $case[3],
+            'industry' => $case[4],
+        ), $case[3], $index + 1);
+    }
+
+    $resources = array(
+        array('FinOps checklist for Google Cloud', 'Guia practica para detectar desperdicio, ordenar presupuestos y priorizar ahorros en Google Cloud.', 'Whitepaper'),
+        array('Gemini adoption guide', 'Checklist para preparar equipos, procesos y gobierno antes de escalar Gemini en la organizacion.', 'Guide'),
+        array('Cloud security assessment', 'Marco inicial para revisar postura, accesos, logging y respuesta ante incidentes.', 'Assessment'),
+    );
+
+    foreach ($resources as $index => $resource) {
+        cityworks_seed_content_post('resource', $resource[0], $resource[1], array(
+            'resource_type' => $resource[2],
+        ), $resource[1], $index + 1);
+    }
+}
+
+/**
  * ==========================================
  * THEME ACTIVATION
  * ==========================================
@@ -513,7 +648,7 @@ function cityworks_theme_activation() {
             'url' => home_url('/quienes-somos'),
             'type' => 'custom',
             'children' => array(
-                array('title' => 'Equipo', 'url' => home_url('/quienes-somos/#equipo'), 'type' => 'custom'),
+                array('title' => 'Equipo', 'url' => home_url('/equipo'), 'type' => 'custom'),
             ),
         ),
         array('title' => 'Contacto',          'url' => home_url('/contacto'),             'type' => 'custom'),
@@ -615,20 +750,29 @@ function cityworks_theme_activation() {
             'title'   => 'Insights',
             'content' => '[cityworks_insights]',
         ),
+        'recursos' => array(
+            'title'   => 'Recursos',
+            'content' => '[cityworks_resources]',
+        ),
         'quienes-somos' => array(
             'title'   => 'Quienes Somos',
             'content' => '[cityworks_about_overview]',
+        ),
+        'equipo' => array(
+            'title'   => 'Equipo',
+            'content' => '[cityworks_team]',
         ),
     );
     foreach ($pages as $slug => $page) {
         $existing = get_page_by_path($slug);
         if ($existing) {
-            wp_update_post(array(
-                'ID'           => $existing->ID,
-                'post_title'   => $page['title'],
-                'post_content' => $page['content'],
-                'post_status'  => 'publish',
-            ));
+            if (trim($existing->post_content) === '') {
+                wp_update_post(array(
+                    'ID'           => $existing->ID,
+                    'post_content' => $page['content'],
+                    'post_status'  => 'publish',
+                ));
+            }
         } else {
             wp_insert_post(array(
                 'post_title'   => $page['title'],
@@ -639,6 +783,8 @@ function cityworks_theme_activation() {
             ));
         }
     }
+
+    cityworks_seed_default_content();
 
     // Prepare Academy categories for the future learning hub. LMS is intentionally deferred.
     if (!term_exists('CityWorks Academy', 'category')) {
@@ -660,7 +806,7 @@ function cityworks_theme_activation() {
         if (!$home) {
             $home_id = wp_insert_post(array(
                 'post_title'   => 'Home',
-                'post_content' => '',
+                'post_content' => '[cityworks_home]',
                 'post_status'  => 'publish',
                 'post_type'    => 'page',
                 'post_name'    => 'home',
@@ -671,6 +817,14 @@ function cityworks_theme_activation() {
             update_option('page_on_front', $home->ID);
             update_option('show_on_front', 'page');
         }
+    }
+
+    $home_page_id = get_option('page_on_front');
+    if ($home_page_id && trim((string) get_post_field('post_content', $home_page_id)) === '') {
+        wp_update_post(array(
+            'ID'           => $home_page_id,
+            'post_content' => '[cityworks_home]',
+        ));
     }
 }
 add_action('after_switch_theme', 'cityworks_theme_activation');

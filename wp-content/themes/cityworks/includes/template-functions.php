@@ -10,6 +10,79 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Normalize Phosphor icon names so templates do not generate broken classes.
+ */
+function cityworks_get_icon_class($icon = '', $fallback = 'cloud') {
+    $icon = trim((string) $icon);
+    $fallback = trim((string) $fallback);
+
+    if ($icon === '') {
+        $icon = $fallback;
+    }
+
+    $icon = str_replace(array('ph ph-', 'ph-', 'ph '), '', $icon);
+    $icon = sanitize_title($icon);
+
+    $aliases = array(
+        'bar-chart' => 'chart-line-up',
+        'chart-bar' => 'chart-line-up',
+        'shield' => 'shield-check',
+        'box' => 'cube',
+        'server' => 'database',
+        'git-branch' => 'git-branch',
+        'shopping-cart' => 'shopping-cart',
+        'linkedin' => 'linkedin-logo',
+        'instagram' => 'instagram-logo',
+        'email' => 'envelope-simple',
+        'mail' => 'envelope-simple',
+        'location' => 'map-pin',
+    );
+
+    if (isset($aliases[$icon])) {
+        $icon = $aliases[$icon];
+    }
+
+    return 'ph ph-' . $icon;
+}
+
+/**
+ * Pick a sensible service icon when old content has no icon meta.
+ */
+function cityworks_get_service_icon_name($title, $stored_icon = '') {
+    if (!empty($stored_icon)) {
+        return $stored_icon;
+    }
+
+    $title = strtolower((string) $title);
+
+    if (str_contains($title, 'ai') || str_contains($title, 'ia') || str_contains($title, 'gemini') || str_contains($title, 'vertex')) {
+        return 'brain';
+    }
+
+    if (str_contains($title, 'data') || str_contains($title, 'looker') || str_contains($title, 'analytics')) {
+        return 'chart-line-up';
+    }
+
+    if (str_contains($title, 'security') || str_contains($title, 'seguridad')) {
+        return 'shield-check';
+    }
+
+    if (str_contains($title, 'workspace') || str_contains($title, 'change')) {
+        return 'users-three';
+    }
+
+    if (str_contains($title, 'finops') || str_contains($title, 'optimization')) {
+        return 'coins';
+    }
+
+    if (str_contains($title, 'support') || str_contains($title, 'soporte')) {
+        return 'headset';
+    }
+
+    return 'cloud';
+}
+
+/**
  * Get hero section data
  */
 function cityworks_get_hero_data() {
@@ -36,9 +109,12 @@ function cityworks_get_services() {
 
     if (!empty($service_posts)) {
         return array_map(function($post) {
+            $title = get_the_title($post);
+            $stored_icon = get_post_meta($post->ID, 'service_icon', true);
+
             return array(
-                'title'   => get_the_title($post),
-                'icon'    => get_post_meta($post->ID, 'service_icon', true) ?: 'cloud',
+                'title'   => $title,
+                'icon'    => cityworks_get_service_icon_name($title, $stored_icon),
                 'excerpt' => has_excerpt($post) ? get_the_excerpt($post) : wp_trim_words(wp_strip_all_tags($post->post_content), 24),
                 'link'    => get_permalink($post),
             );
@@ -125,6 +201,26 @@ function cityworks_get_stats() {
  * Get industries data
  */
 function cityworks_get_industries() {
+    $industry_posts = get_posts(array(
+        'post_type'      => 'industry',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'orderby'        => 'menu_order date',
+        'order'          => 'ASC',
+    ));
+
+    if (!empty($industry_posts)) {
+        $industries = array();
+
+        foreach ($industry_posts as $post) {
+            $solutions = get_post_meta($post->ID, 'industry_solutions', true);
+            $items = $solutions ? array_filter(array_map('trim', explode(',', $solutions))) : array(wp_trim_words(wp_strip_all_tags($post->post_content), 18));
+            $industries[get_the_title($post)] = $items;
+        }
+
+        return $industries;
+    }
+
     return array(
         'Financial Services' => array(
             'Apigee | API Management & Open Banking',
@@ -163,6 +259,28 @@ function cityworks_get_industries() {
  * Get Priority Plays 2026 solution pillars.
  */
 function cityworks_get_priority_plays() {
+    $solution_posts = get_posts(array(
+        'post_type'      => 'solution_play',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'orderby'        => 'menu_order date',
+        'order'          => 'ASC',
+    ));
+
+    if (!empty($solution_posts)) {
+        return array_map(function ($post) {
+            $items = get_post_meta($post->ID, 'solution_items', true);
+
+            return array(
+                'title'   => get_the_title($post),
+                'icon'    => get_post_meta($post->ID, 'solution_icon', true) ?: 'ph-cloud',
+                'summary' => has_excerpt($post) ? get_the_excerpt($post) : wp_trim_words(wp_strip_all_tags($post->post_content), 24),
+                'outcome' => get_post_meta($post->ID, 'solution_outcome', true) ?: __('Resultado medible para el negocio.', 'cityworks'),
+                'items'   => $items ? array_filter(array_map('trim', explode(',', $items))) : array(),
+            );
+        }, $solution_posts);
+    }
+
     return array(
         array(
             'title' => __('AI', 'cityworks'),
@@ -200,6 +318,30 @@ function cityworks_get_priority_plays() {
             'items' => array('Google Workspace', 'Gemini adoption', 'Agentspace', 'Workflow automation'),
         ),
     );
+}
+
+/**
+ * Render the default home section stack.
+ */
+function cityworks_render_home_sections() {
+    $sections = array(
+        'template-parts/hero',
+        'template-parts/stats',
+        'template-parts/partners',
+        'template-parts/priority-plays',
+        'template-parts/office-showcase',
+        'template-parts/consulting-services',
+        'template-parts/services',
+        'template-parts/industries',
+        'template-parts/insights-masonry',
+        'template-parts/about-overview',
+        'template-parts/case-studies',
+        'template-parts/cta',
+    );
+
+    foreach ($sections as $section) {
+        get_template_part($section);
+    }
 }
 
 /**
@@ -254,6 +396,36 @@ function cityworks_get_insights() {
             'summary' => __('A compact guide for discovering waste, rightsizing workloads and improving forecasting.', 'cityworks'),
             'image' => CITYWORKS_THEME_URL . '/assets/images/uploads/cityworks-highlights.png',
         ),
+    );
+}
+
+/**
+ * Get downloadable resources / lead magnets.
+ */
+function cityworks_get_resources() {
+    $resource_posts = get_posts(array(
+        'post_type'      => 'resource',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'orderby'        => 'menu_order date',
+        'order'          => 'ASC',
+    ));
+
+    if (!empty($resource_posts)) {
+        return array_map(function ($post) {
+            return array(
+                'title'   => get_the_title($post),
+                'type'    => get_post_meta($post->ID, 'resource_type', true) ?: __('Resource', 'cityworks'),
+                'summary' => has_excerpt($post) ? get_the_excerpt($post) : wp_trim_words(wp_strip_all_tags($post->post_content), 24),
+                'link'    => get_permalink($post),
+            );
+        }, $resource_posts);
+    }
+
+    return array(
+        array('title' => __('FinOps checklist for Google Cloud', 'cityworks'), 'type' => __('Whitepaper', 'cityworks'), 'summary' => __('A compact guide for discovering waste and prioritizing savings.', 'cityworks'), 'link' => '#contact'),
+        array('title' => __('Gemini adoption guide', 'cityworks'), 'type' => __('Guide', 'cityworks'), 'summary' => __('A readiness checklist for Gemini adoption across business teams.', 'cityworks'), 'link' => '#contact'),
+        array('title' => __('Cloud security assessment', 'cityworks'), 'type' => __('Assessment', 'cityworks'), 'summary' => __('A practical framework for reviewing your cloud security posture.', 'cityworks'), 'link' => '#contact'),
     );
 }
 

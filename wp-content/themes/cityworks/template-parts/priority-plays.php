@@ -20,7 +20,7 @@ $plays = cityworks_get_priority_plays();
                 <article class="priority-play-card priority-play-card-static fade-in-up stagger-<?php echo esc_attr(($index % 5) + 1); ?>">
                     <div class="priority-card-header">
                         <span class="priority-card-icon">
-                            <i class="ph <?php echo esc_attr($play['icon'] ?? 'ph-cloud'); ?>" aria-hidden="true"></i>
+                            <i class="<?php echo esc_attr(cityworks_get_icon_class($play['icon'] ?? '', 'cloud')); ?>" aria-hidden="true"></i>
                         </span>
                         <h3><?php echo esc_html($play['title']); ?></h3>
                     </div>

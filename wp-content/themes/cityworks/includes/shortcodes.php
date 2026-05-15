@@ -17,10 +17,14 @@ add_action('init', function() {
     add_shortcode('cityworks_contact', 'cityworks_contact_shortcode');
     add_shortcode('cityworks_hero', 'cityworks_hero_shortcode');
     add_shortcode('cityworks_case_studies', 'cityworks_case_studies_shortcode');
+    add_shortcode('cityworks_case_studies_page', 'cityworks_case_studies_page_shortcode');
     add_shortcode('cityworks_priority_plays', 'cityworks_priority_plays_shortcode');
     add_shortcode('cityworks_consulting_services', 'cityworks_consulting_services_shortcode');
     add_shortcode('cityworks_insights', 'cityworks_insights_shortcode');
     add_shortcode('cityworks_about_overview', 'cityworks_about_overview_shortcode');
+    add_shortcode('cityworks_team', 'cityworks_team_shortcode');
+    add_shortcode('cityworks_resources', 'cityworks_resources_shortcode');
+    add_shortcode('cityworks_home', 'cityworks_home_shortcode');
     add_shortcode('cityworks_academy_placeholder', 'cityworks_academy_placeholder_shortcode');
 });
 
@@ -46,6 +50,20 @@ function cityworks_about_overview_shortcode() {
     return cityworks_render_template_part_shortcode('template-parts/about-overview');
 }
 
+function cityworks_team_shortcode() {
+    return cityworks_render_template_part_shortcode('template-parts/team-overview');
+}
+
+function cityworks_resources_shortcode() {
+    return cityworks_render_template_part_shortcode('template-parts/resources-grid');
+}
+
+function cityworks_home_shortcode() {
+    ob_start();
+    cityworks_render_home_sections();
+    return ob_get_clean();
+}
+
 function cityworks_academy_placeholder_shortcode() {
     return cityworks_render_template_part_shortcode('template-parts/academy-placeholder');
 }
@@ -54,10 +72,10 @@ function cityworks_services_shortcode($atts) {
     $services = cityworks_get_services();
     $output = '<div class="cityworks-services-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">';
     foreach ($services as $service) {
-        $icon_class = sanitize_title(str_replace(' ', '-', strtolower($service['title'])));
+        $icon_class = cityworks_get_icon_class($service['icon'] ?? '', 'cloud');
         $output .= '
         <div class="service-card hover-lift">
-            <div class="service-icon"><i class="ph ph-' . esc_attr($icon_class) . '"></i></div>
+            <div class="service-icon"><i class="' . esc_attr($icon_class) . '" aria-hidden="true"></i></div>
             <h3 class="service-title">' . esc_html($service['title']) . '</h3>
             <p class="service-desc">' . esc_html($service['excerpt']) . '</p>
             <a href="#contact" class="service-link">' . esc_html__('Learn more', 'cityworks') . ' &rarr;</a>
@@ -77,7 +95,7 @@ function cityworks_industries_shortcode($atts) {
         $icon = $icons[$i % count($icons)];
         $output .= '
         <div class="industry-card">
-            <div class="industry-icon"><i class="ph ph-' . esc_attr($icon) . '"></i></div>
+            <div class="industry-icon"><i class="' . esc_attr(cityworks_get_icon_class($icon, 'building')) . '" aria-hidden="true"></i></div>
             <h3 class="industry-title">' . esc_html($name) . '</h3>
             <ul class="industry-list">';
         foreach ($solutions as $solution) {
@@ -132,6 +150,10 @@ function cityworks_case_studies_shortcode($atts) {
 }
 add_shortcode('cityworks_case_studies', 'cityworks_case_studies_shortcode');
 
+function cityworks_case_studies_page_shortcode() {
+    return cityworks_render_template_part_shortcode('template-parts/case-studies-page');
+}
+
 function cityworks_contact_shortcode($atts) {
     ob_start();
     ?>
@@ -167,9 +189,7 @@ function cityworks_hero_shortcode($atts) {
             <div class="hero-grid">
                 <div class="hero-content">
                     <span class="hero-badge">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 0.5rem; vertical-align: middle;">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                        </svg>
+                        <i class="<?php echo esc_attr(cityworks_get_icon_class('stack', 'stack')); ?>" aria-hidden="true"></i>
                         <?php echo esc_html($hero['badge'] ?? 'Google Cloud Partner'); ?>
                     </span>
                     <h1 class="hero-title"><?php echo esc_html($hero['title']); ?></h1>

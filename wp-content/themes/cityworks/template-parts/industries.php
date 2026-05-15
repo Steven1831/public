@@ -22,7 +22,7 @@ $i = 0;
             <?php foreach ($industries as $name => $solutions): ?>
                 <div class="industry-card fade-in-up stagger-<?php echo ($i % 5) + 1; ?>">
                     <div class="industry-icon">
-                        <i class="ph ph-<?php echo esc_attr($icons[$i % count($icons)]); ?>"></i>
+                        <i class="<?php echo esc_attr(cityworks_get_icon_class($icons[$i % count($icons)], 'building')); ?>" aria-hidden="true"></i>
                     </div>
                     <h3 class="industry-title"><?php echo esc_html($name); ?></h3>
                     <ul class="industry-list">

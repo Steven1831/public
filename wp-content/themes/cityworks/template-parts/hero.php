@@ -13,9 +13,7 @@ $hero = cityworks_get_hero_data();
         <div class="hero-grid">
             <div class="hero-content fade-in-up">
                 <span class="hero-badge">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 0.5rem; vertical-align: middle;">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                    </svg>
+                    <i class="<?php echo esc_attr(cityworks_get_icon_class('stack', 'stack')); ?>" aria-hidden="true"></i>
                     <?php echo esc_html($hero['badge'] ?? 'Google Cloud Partner'); ?>
                 </span>
                 <h1 class="hero-title"><?php echo esc_html($hero['title']); ?></h1>

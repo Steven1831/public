@@ -63,9 +63,7 @@
                 City<span class="text-primary">Works</span>
             </span>
             <button class="mobile-menu-close" id="mobile-menu-close" aria-label="<?php _e('Close menu', 'cityworks'); ?>">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M18 6L6 18M6 6l12 12"/>
-                </svg>
+                <i class="<?php echo esc_attr(cityworks_get_icon_class('x', 'x')); ?>" aria-hidden="true"></i>
             </button>
         </div>
         <nav class="mobile-nav-body">
@@ -95,7 +93,7 @@ function cityworks_header_fallback_menu() {
     echo '<li><a href="' . home_url('/soluciones') . '" class="nav-link">' . __('Soluciones', 'cityworks') . '</a></li>';
     echo '<li><a href="' . home_url('/servicios') . '" class="nav-link">' . __('Servicios', 'cityworks') . '</a></li>';
     echo '<li class="menu-item-has-children"><a href="' . home_url('/insights') . '" class="nav-link">' . __('Insights', 'cityworks') . '</a><ul class="sub-menu"><li><a href="' . home_url('/casos-de-exito') . '">' . __('Casos de Exito', 'cityworks') . '</a></li><li><a href="' . home_url('/recursos') . '">' . __('Recursos', 'cityworks') . '</a></li></ul></li>';
-    echo '<li class="menu-item-has-children"><a href="' . home_url('/quienes-somos') . '" class="nav-link">' . __('Quienes Somos', 'cityworks') . '</a><ul class="sub-menu"><li><a href="' . home_url('/quienes-somos/#equipo') . '">' . __('Equipo', 'cityworks') . '</a></li></ul></li>';
+    echo '<li class="menu-item-has-children"><a href="' . home_url('/quienes-somos') . '" class="nav-link">' . __('Quienes Somos', 'cityworks') . '</a><ul class="sub-menu"><li><a href="' . home_url('/equipo') . '">' . __('Equipo', 'cityworks') . '</a></li></ul></li>';
     echo '<li><a href="' . home_url('/contacto') . '" class="nav-link">' . __('Contact', 'cityworks') . '</a></li>';
     echo '</ul>';
 }
@@ -106,7 +104,7 @@ function cityworks_mobile_fallback_menu() {
     echo '<li><a href="' . home_url('/soluciones') . '">' . __('Soluciones', 'cityworks') . '</a></li>';
     echo '<li><a href="' . home_url('/servicios') . '">' . __('Servicios', 'cityworks') . '</a></li>';
     echo '<li class="menu-item-has-children"><a href="' . home_url('/insights') . '">' . __('Insights', 'cityworks') . '</a><ul class="sub-menu"><li><a href="' . home_url('/casos-de-exito') . '">' . __('Casos de Exito', 'cityworks') . '</a></li><li><a href="' . home_url('/recursos') . '">' . __('Recursos', 'cityworks') . '</a></li></ul></li>';
-    echo '<li class="menu-item-has-children"><a href="' . home_url('/quienes-somos') . '">' . __('Quienes Somos', 'cityworks') . '</a><ul class="sub-menu"><li><a href="' . home_url('/quienes-somos/#equipo') . '">' . __('Equipo', 'cityworks') . '</a></li></ul></li>';
+    echo '<li class="menu-item-has-children"><a href="' . home_url('/quienes-somos') . '">' . __('Quienes Somos', 'cityworks') . '</a><ul class="sub-menu"><li><a href="' . home_url('/equipo') . '">' . __('Equipo', 'cityworks') . '</a></li></ul></li>';
     echo '<li><a href="' . home_url('/contacto') . '">' . __('Contact', 'cityworks') . '</a></li>';
     echo '</ul>';
 }

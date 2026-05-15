@@ -29,17 +29,13 @@ get_header();
         ?>
             <article class="service-card hover-lift fade-in-up stagger-<?php echo ($index % 6) + 1; ?>">
                 <div class="service-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                    </svg>
+                    <i class="<?php echo esc_attr(cityworks_get_icon_class($service['icon'] ?? '', 'cloud')); ?>" aria-hidden="true"></i>
                 </div>
                 <h3 class="service-title"><?php echo esc_html($service['title']); ?></h3>
                 <p class="service-desc"><?php echo esc_html($service['excerpt']); ?></p>
                 <a href="<?php echo esc_url($service['link']); ?>" class="service-link">
                     <?php _e('Ver detalles', 'cityworks'); ?>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 12h14m-7-7 7 7-7 7"/>
-                    </svg>
+                    <i class="<?php echo esc_attr(cityworks_get_icon_class('arrow-right', 'arrow-right')); ?>" aria-hidden="true"></i>
                 </a>
             </article>
         <?php endforeach; ?>
